@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @param <E> The type of elements stored in the list.
  */
-class ObservableList<E> implements List<E> {
+public class ObservableList<E> implements List<E> {
 
     private List<E> list;
     private PublishSubject<Indexed<E>> added = PublishSubject.create();
