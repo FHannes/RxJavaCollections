@@ -1,5 +1,7 @@
 # Reactive Collections for RxJava
 
+[![Build Status](https://travis-ci.org/FHannes/RxJavaCollections.svg?branch=master)](https://travis-ci.org/FHannes/RxJavaCollections)
+
 RxJavaCollections is a library which offers extensions for the [RxJava](https://github.com/ReactiveX/RxJava/) 2.x library, in order to observe operations performed on standard Java collections such as `List<E>`.
 
 This project is still under development and currently only offers support for the `List<E>` class.
