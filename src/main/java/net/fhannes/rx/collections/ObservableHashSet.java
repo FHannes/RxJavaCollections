@@ -18,30 +18,22 @@
  */
 package net.fhannes.rx.collections;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
- * This class is a reactive list. It is a specialized version of the {@link ObservableList<E>} class, which wraps around
- * an {@link ArrayList} object.
+ * This class is a reactive set. It is a specialized version of the {@link ObservableSet<E>} class, which wraps around
+ * a {@link HashSet} object.
  *
- * @param <E> The type of elements stored in the list.
+ * @param <E> The type of elements stored in the set.
  */
-public class ObservableArrayList<E> extends ObservableList<E> {
+public class ObservableHashSet<E> extends ObservableSet<E> {
 
-    public ObservableArrayList() {
-        this(new ArrayList<>());
+    public ObservableHashSet() {
+        this(new HashSet<>());
     }
 
-    public ObservableArrayList(ArrayList<E> list) {
-        super(list);
-    }
-
-    @Override
-    public void clear() {
-        while (!getList().isEmpty()) {
-            // By removing last element, the internal array can just be resized
-            remove(getList().size() - 1);
-        }
+    public ObservableHashSet(HashSet<E> set) {
+        super(set);
     }
 
 }

@@ -4,7 +4,7 @@
 
 RxJavaCollections is a library which offers extensions for the [RxJava](https://github.com/ReactiveX/RxJava/) 2.x library, in order to observe operations performed on standard Java collections such as `List<E>`.
 
-This project is still under development and currently only offers support for the `List<E>` class.
+This project is still under development and currently only offers support for the `List<E>` and `Set<E>` classes.
 
 ## Getting started
 
