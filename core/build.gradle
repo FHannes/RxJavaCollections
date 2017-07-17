@@ -1,0 +1,7 @@
+dependencies {
+    compile 'io.reactivex.rxjava2:rxjava:2.+'
+}
+
+jar {
+    baseName "rxjavacollections"
+}
