@@ -14,6 +14,12 @@ Creating this library was motivated by the fact that RxJava does not come with b
 
 In an imperative language such as Java, it can be beneficial to mix both the imperative and reactive strategies, especially when dealing with user interfaces. A possible downside of both the [ReactFX](https://github.com/TomasMikula/ReactFX) and [RXJavaFX](https://github.com/ReactiveX/RxJavaFX), depending on the project they are used on, is that they have a fixed dependency on JavaFX. While both frameworks offer reactive collections (from JavaFX), similar to those available in this library, the dependency on JavaFX may inhibit the portability of projects to platforms where JavaFX is not available.
 
+## Disclaimer
+
+The reactive wrapper classes in this library incur a performance penalty, especially when performing operations with other collections, such as `addAll()`, because it will handle each element of these collections individually and emit them to the observables after each individual element has been handled.
+
+To improve performance, the `clear()` method for the `ArrayList<E>` wrapper class `ObservableArrayList<E>` will remove and emit removals starting at the end of the list, rather than at the start.
+
 ## License
 
 Copyright (c) 2017, Frédéric Hannes.
