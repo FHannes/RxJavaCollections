@@ -2,6 +2,12 @@ package net.fhannes.rx.collections;
 
 import java.util.ArrayList;
 
+/**
+ * This class is a reactive list. It is a specialized version of the {@link ObservableList<E>} class, which wraps around
+ * an {@link ArrayList} object.
+ *
+ * @param <E> The type of elements stored in the list.
+ */
 public class ObservableArrayList<E> extends ObservableList<E> {
 
     public ObservableArrayList() {

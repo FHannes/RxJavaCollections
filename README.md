@@ -6,7 +6,7 @@ This project is still under development and currently only offers support for th
 
 ## Getting started
 
-In order to observe actions permed on a `List<E>`, you can wrap an object of that type as `RxCollections.of(list)`. This new object of type `ObservableList<E>` has various methods which return an `Observable<Indexed<E>` object. One such method is `onAdded()`, which returns an observable that emits a value whenever an element is added to the list. The value emitted is of type `Indexed<E>` and contains the element added, as well as the index it was added at in the list. These values can be obtained with `getValue()` and `getIndex()` respectively.
+In order to observe actions performed on a `List<E>`, you can wrap an object of that type as `RxCollections.of(list)`. This new object of type `ObservableList<E>` has various methods which return an `Observable<Indexed<E>` object. One such method is `onAdded()`, which returns an observable that emits a value whenever an element is added to the list. The value emitted is of type `Indexed<E>` and contains the element added, as well as the index it was added at in the list. These values can be obtained with `getValue()` and `getIndex()` respectively.
 
 ## Motivation
 
