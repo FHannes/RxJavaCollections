@@ -19,6 +19,7 @@
 package net.fhannes.rx.collections;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 import net.fhannes.rx.collections.util.Indexed;
 
@@ -33,7 +34,7 @@ import java.util.*;
 public class ObservableList<E> implements List<E> {
 
     private List<E> list;
-    private PublishSubject<Observable<E>> items = PublishSubject.create();
+    private BehaviorSubject<Observable<E>> items = BehaviorSubject.create();
     private PublishSubject<Indexed<E>> added = PublishSubject.create();
     private PublishSubject<Indexed<E>> removed = PublishSubject.create();
     private PublishSubject<Indexed<E>> updated = PublishSubject.create();
@@ -240,7 +241,7 @@ public class ObservableList<E> implements List<E> {
     }
 
     /**
-     * Emits an observable which emits all items of the list, each time it is updated. If a method such as
+     * Emits an observable which emits all items of the list, initiall and each time it is updated. If a method such as
      * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
      */
     public Observable<Observable<E>> observableChanges() {

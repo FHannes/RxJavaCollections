@@ -19,6 +19,7 @@
 package net.fhannes.rx.collections;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ import java.util.Set;
 public class ObservableSet<E> implements Set<E> {
 
     private Set<E> set;
-    private PublishSubject<Observable<E>> items = PublishSubject.create();
+    private BehaviorSubject<Observable<E>> items = BehaviorSubject.create();
     private PublishSubject<E> added = PublishSubject.create();
     private PublishSubject<E> removed = PublishSubject.create();
 
@@ -161,7 +162,7 @@ public class ObservableSet<E> implements Set<E> {
     }
 
     /**
-     * Emits an observable which emits all items in the set, each time it is updated. If a method such as
+     * Emits an observable which emits all items in the set, initially and each time it is updated. If a method such as
      * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
      */
     public Observable<Observable<E>> observableChanges() {
