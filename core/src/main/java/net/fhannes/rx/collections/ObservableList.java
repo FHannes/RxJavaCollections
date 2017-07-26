@@ -33,10 +33,13 @@ import java.util.*;
 public class ObservableList<E> implements List<E> {
 
     private List<E> list;
+    private PublishSubject<Observable<E>> items = PublishSubject.create();
     private PublishSubject<Indexed<E>> added = PublishSubject.create();
     private PublishSubject<Indexed<E>> removed = PublishSubject.create();
     private PublishSubject<Indexed<E>> updated = PublishSubject.create();
     private PublishSubject<Indexed<E>> updatedChanged = PublishSubject.create();
+
+    private boolean updating = false;
 
     ObservableList(List<E> list) {
         this.list = list;
@@ -47,6 +50,21 @@ public class ObservableList<E> implements List<E> {
      */
     List<E> getList() {
         return list;
+    }
+
+    private void changed() {
+        if (!updating) {
+            items.onNext(observable());
+        }
+    }
+
+    private void beginUpdate() {
+        updating = true;
+    }
+
+    private void endUpdate(boolean changed) {
+        updating = false;
+        changed();
     }
 
     @Override
@@ -84,6 +102,7 @@ public class ObservableList<E> implements List<E> {
         boolean changed = getList().add(o);
         if (changed) {
             added.onNext(Indexed.of(getList().size() - 1, o));
+            changed();
         }
         return changed;
     }
@@ -110,20 +129,25 @@ public class ObservableList<E> implements List<E> {
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
+        beginUpdate();
         for (E e : c) {
             add(index++, e);
         }
+        endUpdate(true);
+        changed();
         return c.size() != 0;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean changed = false;
+        beginUpdate();
         for (Object o : c) {
             while (remove(o)) {
                 changed = true;
             }
         }
+        endUpdate(changed);
         return changed;
     }
 
@@ -132,6 +156,7 @@ public class ObservableList<E> implements List<E> {
         boolean changed = false;
         Set<Object> objects = new HashSet<>(c);
         int idx = 0;
+        beginUpdate();
         while (idx < getList().size()) {
             if (!objects.contains(getList().get(idx))) {
                 remove(idx);
@@ -140,6 +165,7 @@ public class ObservableList<E> implements List<E> {
                 idx++;
             }
         }
+        endUpdate(changed);
         return changed;
     }
 
@@ -161,6 +187,7 @@ public class ObservableList<E> implements List<E> {
         updated.onNext(Indexed.of(index, element));
         if (!Objects.equals(old, element)) {
             updatedChanged.onNext(Indexed.of(index, element));
+            changed();
         }
         return old;
     }
@@ -169,12 +196,14 @@ public class ObservableList<E> implements List<E> {
     public void add(int index, E element) {
         getList().add(index, element);
         added.onNext(Indexed.of(index, element));
+        changed();
     }
 
     @Override
     public E remove(int index) {
         E old = getList().remove(index);
         removed.onNext(Indexed.of(index, old));
+        changed();
         return old;
     }
 
@@ -208,6 +237,14 @@ public class ObservableList<E> implements List<E> {
      */
     public Observable<E> observable() {
         return Observable.fromIterable(getList());
+    }
+
+    /**
+     * Emits an observable which emits all items of the list, each time it is updated. If a method such as
+     * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
+     */
+    public Observable<Observable<E>> observableChanges() {
+        return Observable.wrap(items);
     }
 
     /**

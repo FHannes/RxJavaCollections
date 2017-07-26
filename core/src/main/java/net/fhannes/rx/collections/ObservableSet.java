@@ -35,11 +35,29 @@ import java.util.Set;
 public class ObservableSet<E> implements Set<E> {
 
     private Set<E> set;
+    private PublishSubject<Observable<E>> items = PublishSubject.create();
     private PublishSubject<E> added = PublishSubject.create();
     private PublishSubject<E> removed = PublishSubject.create();
 
+    private boolean updating = false;
+
     ObservableSet(Set<E> set) {
         this.set = set;
+    }
+
+    private void changed() {
+        if (!updating) {
+            items.onNext(observable());
+        }
+    }
+
+    private void beginUpdate() {
+        updating = true;
+    }
+
+    private void endUpdate(boolean changed) {
+        updating = false;
+        changed();
     }
 
     /**
@@ -84,6 +102,7 @@ public class ObservableSet<E> implements Set<E> {
         boolean changed = getSet().add(e);
         if (changed) {
             added.onNext(e);
+            changed();
         }
         return changed;
     }
@@ -93,6 +112,7 @@ public class ObservableSet<E> implements Set<E> {
         boolean changed = getSet().remove(o);
         if (changed) {
             removed.onNext((E) o);
+            changed();
         }
         return changed;
     }
@@ -104,19 +124,28 @@ public class ObservableSet<E> implements Set<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return c.stream().filter(this::add).count() != 0;
+        beginUpdate();
+        boolean changed = c.stream().filter(this::add).count() != 0;
+        endUpdate(changed);
+        return changed;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
         Set<Object> objects = new HashSet<>(c);
-        return getSet().stream().filter(o -> !objects.contains(o)).filter(this::remove).count() != 0;
+        beginUpdate();
+        boolean changed = getSet().stream().filter(o -> !objects.contains(o)).filter(this::remove).count() != 0;
+        endUpdate(changed);
+        return changed;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         Set<Object> objects = new HashSet<>(c);
-        return getSet().stream().filter(objects::contains).filter(this::remove).count() != 0;
+        beginUpdate();
+        boolean changed = getSet().stream().filter(objects::contains).filter(this::remove).count() != 0;
+        endUpdate(changed);
+        return changed;
     }
 
     @Override
@@ -129,6 +158,14 @@ public class ObservableSet<E> implements Set<E> {
      */
     public Observable<E> observable() {
         return Observable.fromIterable(getSet());
+    }
+
+    /**
+     * Emits an observable which emits all items in the set, each time it is updated. If a method such as
+     * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
+     */
+    public Observable<Observable<E>> observableChanges() {
+        return Observable.wrap(items);
     }
 
     /**

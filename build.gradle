@@ -1,6 +1,6 @@
 subprojects {
     group 'net.fhannes.rx'
-    version '0.1.0'
+    version '0.2.0'
 
     apply plugin: 'java'
 
