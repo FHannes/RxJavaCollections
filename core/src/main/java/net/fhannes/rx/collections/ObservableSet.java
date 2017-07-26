@@ -44,6 +44,7 @@ public class ObservableSet<E> implements Set<E> {
 
     ObservableSet(Set<E> set) {
         this.set = set;
+        changed();
     }
 
     private void changed() {

@@ -51,6 +51,7 @@ public class ObservableList<E> implements List<E> {
      */
     List<E> getList() {
         return list;
+        changed();
     }
 
     private void changed() {
