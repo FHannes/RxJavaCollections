@@ -22,10 +22,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class is a reactive set. It is a wrapper around a standard {@link Set<E>} object, providing various Observable
@@ -36,7 +33,7 @@ import java.util.Set;
 public class ObservableSet<E> implements Set<E> {
 
     private Set<E> set;
-    private BehaviorSubject<Observable<E>> items = BehaviorSubject.create();
+    private BehaviorSubject<Set<E>> items = BehaviorSubject.create();
     private PublishSubject<E> added = PublishSubject.create();
     private PublishSubject<E> removed = PublishSubject.create();
 
@@ -49,7 +46,7 @@ public class ObservableSet<E> implements Set<E> {
 
     private void changed() {
         if (!updating) {
-            items.onNext(observable());
+            items.onNext(Collections.unmodifiableSet(this));
         }
     }
 
@@ -163,10 +160,10 @@ public class ObservableSet<E> implements Set<E> {
     }
 
     /**
-     * Emits an observable which emits all items in the set, initially and each time it is updated. If a method such as
-     * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
+     * Emits a read-only copy of the list on subscription and whenever it the set is updated. If a method such as
+     * {@link #addAll(Collection)} is used, it will emit a copy only once and only if the set was changed.
      */
-    public Observable<Observable<E>> observableChanges() {
+    public Observable<Set<E>> observableChanges() {
         return Observable.wrap(items);
     }
 

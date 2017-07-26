@@ -18,6 +18,7 @@
  */
 package net.fhannes.rx.collections;
 
+import com.sun.javafx.scene.transform.TransformUtils;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
@@ -34,7 +35,7 @@ import java.util.*;
 public class ObservableList<E> implements List<E> {
 
     private List<E> list;
-    private BehaviorSubject<Observable<E>> items = BehaviorSubject.create();
+    private BehaviorSubject<List<E>> items = BehaviorSubject.create();
     private PublishSubject<Indexed<E>> added = PublishSubject.create();
     private PublishSubject<Indexed<E>> removed = PublishSubject.create();
     private PublishSubject<Indexed<E>> updated = PublishSubject.create();
@@ -56,7 +57,7 @@ public class ObservableList<E> implements List<E> {
 
     private void changed() {
         if (!updating) {
-            items.onNext(observable());
+            items.onNext(Collections.unmodifiableList(this));
         }
     }
 
@@ -242,10 +243,10 @@ public class ObservableList<E> implements List<E> {
     }
 
     /**
-     * Emits an observable which emits all items of the list, initiall and each time it is updated. If a method such as
-     * {@link #addAll(Collection)} is used, it will emit an observable only once and only if the list was changed.
+     * Emits a read-only copy of the list on subscription and whenever it the list is updated. If a method such as
+     * {@link #addAll(Collection)} is used, it will emit a copy only once and only if the list was changed.
      */
-    public Observable<Observable<E>> observableChanges() {
+    public Observable<List<E>> observableChanges() {
         return Observable.wrap(items);
     }
 
