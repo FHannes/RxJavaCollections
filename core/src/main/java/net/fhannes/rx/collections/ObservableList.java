@@ -44,6 +44,7 @@ public class ObservableList<E> implements List<E> {
 
     ObservableList(List<E> list) {
         this.list = list;
+        changed();
     }
 
     /**
@@ -51,7 +52,6 @@ public class ObservableList<E> implements List<E> {
      */
     List<E> getList() {
         return list;
-        changed();
     }
 
     private void changed() {
