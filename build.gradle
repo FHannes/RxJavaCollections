@@ -1,5 +1,7 @@
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
     group 'net.fhannes.rx'
     version '0.2.0'
@@ -26,7 +28,11 @@ subprojects {
     }
 
     artifacts {
-        archives javadocJar, sourcesJar
+        archives jar, javadocJar, sourcesJar
+    }
+
+    signing {
+        sign configurations.archives
     }
 }
 
@@ -34,5 +40,48 @@ project(':javafx') {
     archivesBaseName = "rxjavacollections-fx"
     dependencies {
         compile project(':core')
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'RxJavaCollections'
+                packaging 'jar'
+                description 'An RxJava extension for reactive collections'
+                url 'https://github.com/FHannes/RxJavaCollections'
+
+                scm {
+                    connection 'scm:git@github.com:FHannes/RxJavaCollections.git'
+                    developerConnection 'scm:git@github.com:FHannes/RxJavaCollections.git'
+                    url 'https://github.com/FHannes/RxJavaCollections.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'fhannes'
+                        name 'Frédéric Hannes'
+                    }
+                }
+            }
+        }
     }
 }
