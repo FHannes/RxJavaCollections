@@ -36,8 +36,8 @@ public final class JavaFXAdaptor {
     }
 
     /**
-     * Creates an adaptor which maps an {@link ObservableList <E>} object from RxJavaCollections onto a new
-     * {@link javafx.collections.ObservableList <E>} from JavaFX.
+     * Creates an adaptor which maps an {@link ObservableList} object from RxJavaCollections onto a new
+     * {@link javafx.collections.ObservableList} from JavaFX.
      *
      * @param list The given reactive list.
      * @param <E> The type of the elements stored in the list.
@@ -53,8 +53,8 @@ public final class JavaFXAdaptor {
     }
 
     /**
-     * Creates an adaptor which maps an {@link ObservableSet <E>} object from RxJavaCollections onto a new
-     * {@link javafx.collections.ObservableSet <E>} from JavaFX.
+     * Creates an adaptor which maps an {@link ObservableSet} object from RxJavaCollections onto a new
+     * {@link javafx.collections.ObservableSet} from JavaFX.
      *
      * @param list The given reactive set.
      * @param <E> The type of the elements stored in the set.

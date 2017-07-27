@@ -21,7 +21,7 @@ package net.fhannes.rx.collections;
 import java.util.HashSet;
 
 /**
- * This class is a reactive set. It is a specialized version of the {@link ObservableSet<E>} class, which wraps around
+ * This class is a reactive set. It is a specialized version of the {@link ObservableSet} class, which wraps around
  * a {@link HashSet} object.
  *
  * @param <E> The type of elements stored in the set.

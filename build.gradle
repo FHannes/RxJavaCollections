@@ -1,8 +1,9 @@
 subprojects {
+    apply plugin: 'java'
+
     group 'net.fhannes.rx'
     version '0.2.0'
-
-    apply plugin: 'java'
+    archivesBaseName = "rxjavacollections"
 
     sourceCompatibility = 1.8
 
@@ -13,9 +14,24 @@ subprojects {
     dependencies {
         testCompile "junit:junit:4.12"
     }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 }
 
 project(':javafx') {
+    archivesBaseName = "rxjavacollections-fx"
     dependencies {
         compile project(':core')
     }

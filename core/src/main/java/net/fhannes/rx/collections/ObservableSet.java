@@ -25,7 +25,7 @@ import io.reactivex.subjects.PublishSubject;
 import java.util.*;
 
 /**
- * This class is a reactive set. It is a wrapper around a standard {@link Set<E>} object, providing various Observable
+ * This class is a reactive set. It is a wrapper around a standard {@link Set} object, providing various Observable
  * objects which emit values when operations are performed on the set.
  *
  * @param <E> The type of elements stored in the set.
@@ -154,6 +154,8 @@ public class ObservableSet<E> implements Set<E> {
 
     /**
      * Returns an observable which emits all items stored in the set, before completing.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<E> observable() {
         return Observable.fromIterable(getSet());
@@ -162,6 +164,8 @@ public class ObservableSet<E> implements Set<E> {
     /**
      * Emits a read-only copy of the list on subscription and whenever it the set is updated. If a method such as
      * {@link #addAll(Collection)} is used, it will emit a copy only once and only if the set was changed.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<Set<E>> observableChanges() {
         return Observable.wrap(items);
@@ -170,6 +174,8 @@ public class ObservableSet<E> implements Set<E> {
     /**
      * Returns an observable which emits a value when a new element is added to the set. The value emitted is the
      * element added to the set.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<E> onAdded() {
         return Observable.wrap(added);
@@ -178,6 +184,8 @@ public class ObservableSet<E> implements Set<E> {
     /**
      * Returns an observable which emits a value when an element is removed from the set. The value emitted is the
      * element removed from the set.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<E> onRemoved() {
         return Observable.wrap(removed);

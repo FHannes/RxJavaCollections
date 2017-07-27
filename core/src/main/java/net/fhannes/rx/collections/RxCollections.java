@@ -37,7 +37,7 @@ public final class RxCollections {
      *
      * @param list A given list.
      * @param <E> The type of the elements stored in the given list.
-     * @return A reactive {@link ObservableList<E>} instance.
+     * @return A reactive {@link ObservableList} instance.
      */
     public static <E> ObservableList<E> of(List<E> list) {
         if (list instanceof ArrayList) {
@@ -53,7 +53,7 @@ public final class RxCollections {
      *
      * @param set A given set.
      * @param <E> The type of the elements stored in the given set.
-     * @return A reactive {@link ObservableList<E>} instance.
+     * @return A reactive {@link ObservableList} instance.
      */
     public static <E> ObservableSet<E> of(Set<E> set) {
         if (set instanceof HashSet) {

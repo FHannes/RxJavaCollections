@@ -27,7 +27,7 @@ import net.fhannes.rx.collections.util.Indexed;
 import java.util.*;
 
 /**
- * This class is a reactive list. It is a wrapper around a standard {@link List<E>} object, providing various Observable
+ * This class is a reactive list. It is a wrapper around a standard {@link List} object, providing various Observable
  * objects which emit values when operations are performed on the list.
  *
  * @param <E> The type of elements stored in the list.
@@ -237,6 +237,8 @@ public class ObservableList<E> implements List<E> {
 
     /**
      * Returns an observable which emits all items stored in the list, before completing.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<E> observable() {
         return Observable.fromIterable(getList());
@@ -245,6 +247,8 @@ public class ObservableList<E> implements List<E> {
     /**
      * Emits a read-only copy of the list on subscription and whenever it the list is updated. If a method such as
      * {@link #addAll(Collection)} is used, it will emit a copy only once and only if the list was changed.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<List<E>> observableChanges() {
         return Observable.wrap(items);
@@ -252,7 +256,9 @@ public class ObservableList<E> implements List<E> {
 
     /**
      * Returns an observable which emits a value when a new element is added to the list. The value emitted is an
-     * {@link Indexed<E>} object, which contains the index of the added element in the list and the element itself.
+     * {@link Indexed} object, which contains the index of the added element in the list and the element itself.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<Indexed<E>> onAdded() {
         return Observable.wrap(added);
@@ -260,7 +266,9 @@ public class ObservableList<E> implements List<E> {
 
     /**
      * Returns an observable which emits a value when an element is removed from the list. The value emitted is an
-     * {@link Indexed<E>} object, which contains the index of the removed element in the list and the element itself.
+     * {@link Indexed} object, which contains the index of the removed element in the list and the element itself.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<Indexed<E>> onRemoved() {
         return Observable.wrap(removed);
@@ -268,8 +276,10 @@ public class ObservableList<E> implements List<E> {
 
     /**
      * Returns an observable which emits a value when an element in the list updated with a new value. The value emitted
-     * is an {@link Indexed<E>} object, which contains the index of the updated element in the list and the element
+     * is an {@link Indexed} object, which contains the index of the updated element in the list and the element
      * itself.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<Indexed<E>> onUpdated() {
         return Observable.wrap(updated);
@@ -277,8 +287,10 @@ public class ObservableList<E> implements List<E> {
 
     /**
      * Returns an observable which emits a value when an element in the list updated with a new value, which differs
-     * from the old value at that index. The value emitted is an {@link Indexed<E>} object, which contains the index of
+     * from the old value at that index. The value emitted is an {@link Indexed} object, which contains the index of
      * the updated element in the list and the element itself.
+     *
+     * @return The {@link Observable} object.
      */
     public Observable<Indexed<E>> onUpdatedChanged() {
         return Observable.wrap(updatedChanged);
