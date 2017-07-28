@@ -21,7 +21,7 @@ package net.fhannes.rx.collections.util;
 import java.util.Objects;
 
 /**
- * A utility class representing a pair of objects.
+ * An immutable  utility class representing a pair of objects.
  *
  * @param <A> The type of the first object.
  * @param <B> The type of the second object.
@@ -48,10 +48,20 @@ public class Pair<A, B> {
         this.b = b;
     }
 
+    /**
+     * Returns the first value of the value pair.
+     *
+     * @return The stored object.
+     */
     public A getA() {
         return a;
     }
 
+    /**
+     * Returns the second value of the value pair.
+     *
+     * @return The stored object.
+     */
     public B getB() {
         return b;
     }

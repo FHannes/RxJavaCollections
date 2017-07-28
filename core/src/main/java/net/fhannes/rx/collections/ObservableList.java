@@ -18,7 +18,6 @@
  */
 package net.fhannes.rx.collections;
 
-import com.sun.javafx.scene.transform.TransformUtils;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
