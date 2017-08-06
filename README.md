@@ -9,7 +9,11 @@ This project is still under development and currently only offers support for th
 
 ## Getting started
 
-In order to observe actions performed on a `List<E>`, you can wrap an object of that type as `RxCollections.of(list)`. This new object of type `ObservableList<E>` has various methods which return an `Observable<Indexed<E>` object. One such method is `onAdded()`, which returns an observable that emits a value whenever an element is added to the list. The value emitted is of type `Indexed<E>` and contains the element added, as well as the index it was added at in the list. These values can be obtained with `getValue()` and `getIndex()` respectively.
+In order to observe actions performed on a `List<E>`, you can wrap an object of that type as `RxCollections.of(list)`. This new object of type `ObservableList<E>` has various methods which return an `Observable<Indexed<E>>` object. One such method is `onAdded()`, which returns an observable that emits a value whenever an element is added to the list. The value emitted is of type `Indexed<E>` and contains the element added, as well as the index it was added at in the list. These values can be obtained with `getValue()` and `getIndex()` respectively.
+
+### Memory management
+
+Typically a Java developer does not have to worry about memory management. Java has a garbage collector which periodically frees objects from the memory which are no longer references. This does however become an important consideration when working with infinite observables (observables which never complete), which are returned by various methods in this library. When an object is involved in subscribing to such an observable, it will never be removed from the memory unless the subscription is terminated when it is no longer required. This can be achieved by calling the `dispose()` method on the `Disposable`object which is returned by the `subscribe()` method.
 
 ## Motivation
 
