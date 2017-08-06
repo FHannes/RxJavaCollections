@@ -56,7 +56,7 @@ public class ObservableList<E> implements List<E> {
 
     private void changed() {
         if (!updating) {
-            items.onNext(Collections.unmodifiableList(this));
+            items.onNext(Collections.unmodifiableList(new ArrayList<>(this)));
         }
     }
 

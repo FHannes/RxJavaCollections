@@ -19,10 +19,14 @@
 package net.fhannes.rx.collections;
 
 import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.Schedulers;
 import net.fhannes.rx.collections.util.Indexed;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Test unit for the {@link ObservableList} class.
@@ -39,6 +43,18 @@ public class ObservableListTest {
 
         o.assertNoErrors();
         o.assertValue(value);
+    }
+
+    @Test
+    public void concurrency() throws Exception {
+        ObservableList<Integer> list = RxCollections.of(new ArrayList<>());
+        TestObserver<List<Integer>> o = list.observableChanges()
+                .observeOn(Schedulers.computation())
+                .map(l -> l.stream().filter(i -> i == 9).collect(Collectors.toList()))
+                .test();
+        IntStream.range(0, 10000).forEach(list::add);
+
+        o.assertNoErrors();
     }
 
 }

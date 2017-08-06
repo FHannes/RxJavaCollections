@@ -46,7 +46,7 @@ public class ObservableSet<E> implements Set<E> {
 
     private void changed() {
         if (!updating) {
-            items.onNext(Collections.unmodifiableSet(this));
+            items.onNext(Collections.unmodifiableSet(new HashSet<>(this)));
         }
     }
 
