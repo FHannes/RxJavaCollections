@@ -13,7 +13,7 @@ In order to observe actions performed on a `List<E>`, you can wrap an object of 
 
 ### Memory management
 
-Typically a Java developer does not have to worry about memory management. Java has a garbage collector which periodically frees objects from the memory which are no longer references. This does however become an important consideration when working with infinite observables (observables which never complete), which are returned by various methods in this library. When an object is involved in subscribing to such an observable, it will never be removed from the memory unless the subscription is terminated when it is no longer required. This can be achieved by calling the `dispose()` method on the `Disposable`object which is returned by the `subscribe()` method.
+Typically a Java developer does not have to worry about memory management. Java has a garbage collector which periodically frees objects from the memory which are no longer referenced. This does however become an important consideration when working with infinite observables (observables which never complete), which are returned by various methods in this library. When an object is involved in subscribing to such an observable, it will never be removed from the memory unless the subscription is terminated when it is no longer required. This can be achieved by calling the `dispose()` method on the `Disposable`object which is returned by the `subscribe()` method.
 
 ## Motivation
 
