@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @param <E> The type of elements stored in the set.
  */
-public class ObservableSet<E> implements Set<E> {
+public class ObservableSet<E> implements Set<E>, ObservableCollection<E, Set<E>> {
 
     private Set<E> set;
     private BehaviorSubject<Set<E>> items = BehaviorSubject.create();
@@ -157,6 +157,7 @@ public class ObservableSet<E> implements Set<E> {
      *
      * @return The {@link Observable} object.
      */
+    @Override
     public Observable<E> observable() {
         return Observable.fromIterable(getSet());
     }
@@ -167,6 +168,7 @@ public class ObservableSet<E> implements Set<E> {
      *
      * @return The {@link Observable} object.
      */
+    @Override
     public Observable<Set<E>> observableChanges() {
         return Observable.wrap(items);
     }

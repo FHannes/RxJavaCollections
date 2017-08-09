@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @param <E> The type of elements stored in the list.
  */
-public class ObservableList<E> implements List<E> {
+public class ObservableList<E> implements List<E>, ObservableCollection<E, List<E>> {
 
     private List<E> list;
     private BehaviorSubject<List<E>> items = BehaviorSubject.create();
@@ -239,6 +239,7 @@ public class ObservableList<E> implements List<E> {
      *
      * @return The {@link Observable} object.
      */
+    @Override
     public Observable<E> observable() {
         return Observable.fromIterable(getList());
     }
@@ -249,6 +250,7 @@ public class ObservableList<E> implements List<E> {
      *
      * @return The {@link Observable} object.
      */
+    @Override
     public Observable<List<E>> observableChanges() {
         return Observable.wrap(items);
     }

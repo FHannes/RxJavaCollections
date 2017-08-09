@@ -18,6 +18,8 @@
  */
 package net.fhannes.rx.collections.fx;
 
+import io.reactivex.disposables.Disposable;
+import javafx.collections.FXCollections;
 import net.fhannes.rx.collections.ObservableList;
 import net.fhannes.rx.collections.RxCollections;
 import org.junit.Test;
@@ -29,15 +31,17 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test unit for the {@link ObservableList} class.
  */
-public class JavaFXAdaptorTest {
+public class RxCollectionsFXTest {
 
     @Test
-    public void adapt() throws Exception {
+    public void bind() throws Exception {
         ObservableList<String> origList = RxCollections.of(new ArrayList<>());
-        javafx.collections.ObservableList<String> list = JavaFXAdaptor.adapt(origList);
+        javafx.collections.ObservableList<String> fxList = FXCollections.observableList(new ArrayList<>());
+        Disposable listBinding = RxCollectionsFX.bind(origList, fxList);
         String str = "Hello world!";
         origList.add(str);
-        assertEquals(list.get(0), str);
+        assertEquals(fxList.get(0), str);
+        listBinding.dispose();
     }
 
 }
