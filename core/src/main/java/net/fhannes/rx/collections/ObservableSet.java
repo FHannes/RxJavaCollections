@@ -129,6 +129,19 @@ public class ObservableSet<E> implements Set<E>, ObservableCollection<E, Set<E>>
         return changed;
     }
 
+    /**
+     * Adds an array of elements to the set.
+     *
+     * @param elements The array of elements as a sequence of arguments of variable length.
+     * @return True if the set was changed.
+     */
+    public boolean addAll(E... elements) {
+        beginUpdate();
+        boolean changed = Arrays.stream(elements).filter(this::add).count() != 0;
+        endUpdate(changed);
+        return changed;
+    }
+
     @Override
     public boolean retainAll(Collection<?> c) {
         Set<Object> objects = new HashSet<>(c);

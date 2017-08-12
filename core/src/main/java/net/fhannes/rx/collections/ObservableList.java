@@ -22,6 +22,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 import net.fhannes.rx.collections.util.Indexed;
+import net.fhannes.rx.collections.util.IndexedChange;
 
 import java.util.*;
 
@@ -37,8 +38,9 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
     private BehaviorSubject<List<E>> items = BehaviorSubject.create();
     private PublishSubject<Indexed<E>> added = PublishSubject.create();
     private PublishSubject<Indexed<E>> removed = PublishSubject.create();
-    private PublishSubject<Indexed<E>> updated = PublishSubject.create();
-    private PublishSubject<Indexed<E>> updatedChanged = PublishSubject.create();
+    private PublishSubject<IndexedChange<E>> updated = PublishSubject.create();
+    private PublishSubject<IndexedChange<E>> updatedChanged = PublishSubject.create();
+    private PublishSubject<IndexedChange<E>> moved = PublishSubject.create();
 
     private boolean updating = false;
 
@@ -126,18 +128,36 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return c.stream().filter(this::add).count() != 0;
+        beginUpdate();
+        boolean changed = c.stream().filter(this::add).count() != 0;
+        endUpdate(changed);
+        return changed;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        beginUpdate();
-        for (E e : c) {
-            add(index++, e);
+        if (c.size() != 0) {
+            beginUpdate();
+            for (E e : c) {
+                add(index++, e);
+            }
+            endUpdate(true);
+            return true;
         }
-        endUpdate(true);
-        changed();
-        return c.size() != 0;
+        return false;
+    }
+
+    /**
+     * Adds an array of elements to the list.
+     *
+     * @param elements The array of elements as a sequence of arguments of variable length.
+     * @return True if the list was changed.
+     */
+    public boolean addAll(E... elements) {
+        beginUpdate();
+        boolean changed = Arrays.stream(elements).filter(this::add).count() != 0;
+        endUpdate(changed);
+        return changed;
     }
 
     @Override
@@ -186,9 +206,9 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
     @Override
     public E set(int index, E element) {
         E old = getList().set(index, element);
-        updated.onNext(Indexed.of(index, element));
+        updated.onNext(IndexedChange.of(index, old, index, element));
         if (!Objects.equals(old, element)) {
-            updatedChanged.onNext(Indexed.of(index, element));
+            updatedChanged.onNext(IndexedChange.of(index, old, index, element));
             changed();
         }
         return old;
@@ -235,6 +255,37 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
     }
 
     /**
+     * Removed the object at a given index and inserts it before the object at given index. If the given index is equal
+     * to or larger than the number of elements in the list, the object will be added to at the end of the list.
+     *
+     * @param oldIndex The old given index.
+     * @param insertIndex The given insertion index.
+     * @return True if the list was altered.
+     */
+    public boolean move(int oldIndex, int insertIndex) {
+        if (oldIndex != insertIndex) {
+            E old = getList().remove(oldIndex);
+            if (insertIndex < 0) {
+                // If the new index is smaller than 0, the element must be moved to index 0
+                insertIndex = 0;
+            }
+            if (insertIndex <= getList().size()) {
+                if (oldIndex < insertIndex) {
+                    insertIndex = insertIndex - 1;
+                }
+                getList().add(insertIndex, old);
+            } else {
+                insertIndex = getList().size();
+                getList().add(old);
+            }
+            moved.onNext(IndexedChange.of(oldIndex, old, insertIndex, old));
+            changed();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns an observable which emits all items stored in the list, before completing.
      *
      * @return The {@link Observable} object.
@@ -277,24 +328,35 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
 
     /**
      * Returns an observable which emits a value when an element in the list updated with a new value. The value emitted
-     * is an {@link Indexed} object, which contains the index of the updated element in the list and the element
-     * itself.
+     * is an {@link IndexedChange} object, which contains the index of the updated element in the list combined with the
+     * old and new elements.
      *
      * @return The {@link Observable} object.
      */
-    public Observable<Indexed<E>> onUpdated() {
+    public Observable<IndexedChange<E>> onUpdated() {
         return Observable.wrap(updated);
     }
 
     /**
      * Returns an observable which emits a value when an element in the list updated with a new value, which differs
-     * from the old value at that index. The value emitted is an {@link Indexed} object, which contains the index of
-     * the updated element in the list and the element itself.
+     * from the old value at that index. The value emitted is an {@link IndexedChange} object, which contains the index
+     * of the updated element in the list combined with the old and new elements.
      *
      * @return The {@link Observable} object.
      */
-    public Observable<Indexed<E>> onUpdatedChanged() {
+    public Observable<IndexedChange<E>> onUpdatedChanged() {
         return Observable.wrap(updatedChanged);
+    }
+
+    /**
+     * Returns an observable which emits a value when an element in the list is moved to a new and different index. The
+     * value emitted is an {@link IndexedChange} object, which contains the index of the updated element in the list
+     * combined with the old and new elements.
+     *
+     * @return The {@link Observable} object.
+     */
+    public Observable<IndexedChange<E>> onMoved() {
+        return Observable.wrap(moved);
     }
 
 }

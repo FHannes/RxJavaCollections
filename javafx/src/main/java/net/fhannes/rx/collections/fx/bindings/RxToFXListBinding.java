@@ -28,7 +28,10 @@ public class RxToFXListBinding<E> implements FXCollectionBinding<E, List<E>, Obs
         disposer.register(rxList.observable().subscribe(fxList::add));
         disposer.register(rxList.onAdded().subscribe(c -> fxList.add(c.getIndex(), c.getValue())));
         disposer.register(rxList.onRemoved().subscribe(c -> fxList.remove(c.getIndex())));
-        disposer.register(rxList.onUpdatedChanged().subscribe(c -> fxList.set(c.getIndex(), c.getValue())));
+        disposer.register(rxList.onUpdatedChanged().subscribe(c ->
+                fxList.set(c.getNewValue().getIndex(), c.getOldValue().getValue())));
+        disposer.register(rxList.onMoved().subscribe(c ->
+                fxList.add(c.getNewValue().getIndex(), fxList.remove(c.getOldValue().getIndex()))));
     }
 
     public RxToFXListBinding(Scheduler scheduler, ObservableList<E> rxList, javafx.collections.ObservableList<E> fxList) {
@@ -38,7 +41,10 @@ public class RxToFXListBinding<E> implements FXCollectionBinding<E, List<E>, Obs
         disposer.register(rxList.observable().observeOn(scheduler).subscribe(fxList::add));
         disposer.register(rxList.onAdded().observeOn(scheduler).subscribe(c -> fxList.add(c.getIndex(), c.getValue())));
         disposer.register(rxList.onRemoved().observeOn(scheduler).subscribe(c -> fxList.remove(c.getIndex())));
-        disposer.register(rxList.onUpdatedChanged().observeOn(scheduler).subscribe(c -> fxList.set(c.getIndex(), c.getValue())));
+        disposer.register(rxList.onUpdatedChanged().observeOn(scheduler).subscribe(c ->
+                fxList.set(c.getNewValue().getIndex(), c.getOldValue().getValue())));
+        disposer.register(rxList.onMoved().observeOn(scheduler).subscribe(c ->
+                fxList.add(c.getNewValue().getIndex(), fxList.remove(c.getOldValue().getIndex()))));
     }
 
     @Override

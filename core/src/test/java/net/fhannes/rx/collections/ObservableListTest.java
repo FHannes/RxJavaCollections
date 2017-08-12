@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Test unit for the {@link ObservableList} class.
  */
@@ -55,6 +57,16 @@ public class ObservableListTest {
         IntStream.range(0, 10000).forEach(list::add);
 
         o.assertNoErrors();
+    }
+
+    @Test
+    public void move() throws Exception {
+        ObservableList<Integer> list = RxCollections.of(new ArrayList<>());
+        list.addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        list.move(2, 4);
+        assertEquals((long) list.get(2), 3);
+        assertEquals((long) list.get(3), 2);
+        assertEquals((long) list.get(4), 4);
     }
 
 }
