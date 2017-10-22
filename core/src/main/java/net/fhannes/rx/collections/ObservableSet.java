@@ -56,7 +56,9 @@ public class ObservableSet<E> implements Set<E>, ObservableCollection<E, Set<E>>
 
     private void endUpdate(boolean changed) {
         updating = false;
-        changed();
+        if (changed) {
+            changed();
+        }
     }
 
     /**

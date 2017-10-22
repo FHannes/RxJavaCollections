@@ -62,4 +62,8 @@ public final class RxCollections {
         return new ObservableSet<>(set);
     }
 
+    public static <K, V> ObservableMap<K, V> of(Map<K, V> map) {
+        return new ObservableMap<>(map);
+    }
+
 }

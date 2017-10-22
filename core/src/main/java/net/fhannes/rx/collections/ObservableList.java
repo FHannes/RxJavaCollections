@@ -68,7 +68,9 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
 
     private void endUpdate(boolean changed) {
         updating = false;
-        changed();
+        if (changed) {
+            changed();
+        }
     }
 
     @Override
@@ -208,6 +210,7 @@ public class ObservableList<E> implements List<E>, ObservableCollection<E, List<
         E old = getList().set(index, element);
         updated.onNext(IndexedChange.of(index, old, index, element));
         if (!Objects.equals(old, element)) {
+            // TODO: Replace with distinctUntilChanged()?
             updatedChanged.onNext(IndexedChange.of(index, old, index, element));
             changed();
         }
